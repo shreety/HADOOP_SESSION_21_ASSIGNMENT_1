@@ -1,0 +1,6 @@
+1. val census_data = sc.textFile("hdfs:///user/cloudera/census.csv").map(x => x.split(",")).map(x => (x(0),x(2),x(3),x(4),x(5),x(6),x(7),x(8),x(9),x(10),x(11),x(12),x(13),x(14),x(15),x(16),x(17),x(18),x(19),x(20),x(21),x(22))).toDF("State" ,"Persons","Males" ,"Females" ,"Growth_1991_2001" ,"Rural" ,"Urban" ,"Scheduled_Caste_population" ,"Percentage_SC_to_total" ,"Number_of_households" ,"Household_size_per_household" ,"Sex_ratio_females_per_1000_males " ,"Sex_ratio_0_6_years" ,"Scheduled_Tribe_population" ,"Percentage_to_total_population_ST" ,"Persons_literate" ,"Males_Literate" ,"Females_Literate" ,"Persons_literacy_rate" ,"Males_Literatacy_Rate" ,"Females_Literacy_Rate" ,"Total_Educated").registerTempTable("census")
+2. val population = sqlContext.sql("select state,sum(persons) as total_population from census group by state order by total_population desc").show 
+3. val growth_rate = sqlContext.sql("select state,avg(Growth_1991_2001) as total_growth from census group by state").show
+4. val literacy = sqlContext.sql("select state,avg(Persons_literacy_rate) from census group by state").show
+5. val female_pop = sqlContext.sql("select state, sum(Males)-sum(Females) from census group by state").show
+6. val percenet_pop = sqlContext.sql("select state, (sum(persons) * 100.0) / SUM(sum(persons)) over() as percent_pop_by_state from census group by state").show
